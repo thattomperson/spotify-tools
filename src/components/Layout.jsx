@@ -5,6 +5,7 @@ import clsx from 'clsx'
 
 import { AudioPlayer } from '@/components/player/AudioPlayer'
 import posterImage from '@/images/poster.png'
+import { useSession } from 'next-auth/react'
 
 function randomBetween(min, max, seed = 1) {
   return () => {
@@ -172,8 +173,17 @@ function AboutSection(props) {
   )
 }
 
-export function Layout({ children }) {
+export function Layout({ children, playlist, tracks }) {
   let hosts = ['Eric Gordon', 'Wes Mantooth']
+  // const { data: session, status } = useSession()
+  // console.log({session, status })
+
+  const copyToClipboard = () => {
+    window.navigator.clipboard.writeText(tracks.map((track) => {
+      return `${track.name}`
+    }).join("\n"));
+  };
+  const openSpotify = () => {window.open(playlist.external_urls.spotify)};
 
   return (
     <>
@@ -201,7 +211,9 @@ export function Layout({ children }) {
           >
             <Image
               className="w-full"
-              src={posterImage}
+              src={playlist?.images?.[0]?.url ?? posterImage}
+              width={640}
+              height={640}
               alt=""
               sizes="(min-width: 1024px) 20rem, (min-width: 640px) 16rem, 12rem"
               priority
@@ -210,21 +222,21 @@ export function Layout({ children }) {
           </Link>
           <div className="mt-10 text-center lg:mt-12 lg:text-left">
             <p className="text-xl font-bold text-slate-900">
-              <Link href="/">Their Side</Link>
+              {playlist?.name ?? 'Please past in a paylist link'}
+              {/* <Link href="/">Their Side</Link> */}
             </p>
             <p className="mt-3 text-lg font-medium leading-8 text-slate-700">
-              Conversations with the most tragically misunderstood people of our
-              time.
+              {playlist?.description ?? ''}
             </p>
           </div>
-          <AboutSection className="mt-12 hidden lg:block" />
+          {/* <AboutSection className="mt-12 hidden lg:block" /> */}
           <section className="mt-10 lg:mt-12">
             <h2 className="sr-only flex items-center font-mono text-sm font-medium leading-7 text-slate-900 lg:not-sr-only">
               <TinyWaveFormIcon
                 colors={['fill-indigo-300', 'fill-blue-300']}
                 className="h-2.5 w-2.5"
               />
-              <span className="ml-2.5">Listen</span>
+              <span className="ml-2.5">Links</span>
             </h2>
             <div className="h-px bg-gradient-to-r from-slate-200/0 via-slate-200 to-slate-200/0 lg:hidden" />
             <ul
@@ -232,20 +244,18 @@ export function Layout({ children }) {
               className="mt-4 flex justify-center gap-10 text-base font-medium leading-7 text-slate-700 sm:gap-8 lg:flex-col lg:gap-4"
             >
               {[
-                ['Spotify', SpotifyIcon],
-                ['Apple Podcast', ApplePodcastIcon],
-                ['Overcast', OvercastIcon],
-                ['RSS Feed', RSSIcon],
-              ].map(([label, Icon]) => (
+                ['Spotify', SpotifyIcon, openSpotify],
+                ['Copy', RSSIcon, copyToClipboard],
+              ].map(([label, Icon, method]) => (
                 <li key={label} className="flex">
-                  <Link
-                    href="/"
+                  <div
                     className="group flex items-center"
                     aria-label={label}
+                    onClick={method}
                   >
                     <Icon className="h-8 w-8 fill-slate-400 group-hover:fill-slate-600" />
                     <span className="hidden sm:ml-3 sm:block">{label}</span>
-                  </Link>
+                  </div>
                 </li>
               ))}
             </ul>
