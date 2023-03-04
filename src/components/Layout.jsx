@@ -177,7 +177,7 @@ export function Layout({ children, playlist, tracks }) {
   let hosts = ['Eric Gordon', 'Wes Mantooth']
   const copyToClipboard = () => {
     window.navigator.clipboard.writeText(tracks.map((track) => {
-      return `${track.name}`
+      return `${track.name} - ${track.artists[0].name}`
     }).join("\n"));
   };
   const openSpotify = () => {window.open(playlist.external_urls.spotify)};
