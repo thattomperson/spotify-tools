@@ -9,6 +9,7 @@ import { Container } from '@/components/Container'
 import { FormattedDate } from '@/components/FormattedDate'
 import { Layout } from '@/components/Layout'
 import { useSession } from 'next-auth/react'
+import Image from 'next/image'
 
 // function PlayPauseIcon({ playing, ...props }) {
 //   return (
@@ -48,50 +49,58 @@ function EpisodeEntry({ track }: { track: SpotifyApi.TrackObjectFull}) {
       className="py-10 sm:py-12"
     >
       <Container className={''}>
-        <div className="flex flex-col items-start">
-          <h2
-            id={`episode-${track.id}-title`}
-            className="mt-2 text-lg font-bold text-slate-900"
-          >
-            <Link href={`/${track.id}`}>{track.name}</Link>
-          </h2>
-          {/* <FormattedDate
-            date={date}
-            className="order-first font-mono text-sm leading-7 text-slate-500"
-          /> */}
-          <p className="mt-1 text-base leading-7 text-slate-700">
-            {track.album.name}
-          </p>
-          <div className="mt-4 flex items-center gap-4">
-            {/* <button
-              type="button"
-              onClick={() => player.toggle()}
-              className="flex items-center text-sm font-bold leading-6 text-pink-500 hover:text-pink-700 active:text-pink-900"
-              aria-label={`${player.playing ? 'Pause' : 'Play'} episode ${
-                track.title
-              }`}
+        <div className='flex'>
+          <Image
+            className='w-1/5 mr-4'
+            src={track.album.images[0].url}
+            width={track.album.images[0].width}
+            height={track.album.images[0].height}
+          />
+          <div className="w-4/5 flex flex-col items-start">
+            <h2
+              id={`episode-${track.id}-title`}
+              className="mt-2 text-lg font-bold text-slate-900"
             >
-              <PlayPauseIcon
-                playing={player.playing}
-                className="h-2.5 w-2.5 fill-current"
-              />
-              <span className="ml-3" aria-hidden="true">
-                Listen
-              </span>
-            </button> */}
-            {/* <span
-              aria-hidden="true"
-              className="text-sm font-bold text-slate-400"
-            >
-              /
-            </span> */}
-            {/* <Link
-              href={`/${track.id}`}
-              className="flex items-center text-sm font-bold leading-6 text-pink-500 hover:text-pink-700 active:text-pink-900"
-              aria-label={`Show notes for episode ${track.title}`}
-            >
-              Show notes
-            </Link> */}
+              <Link href={`/${track.id}`}>{track.name}</Link>
+            </h2>
+            {/* <FormattedDate
+              date={date}
+              className="order-first font-mono text-sm leading-7 text-slate-500"
+            /> */}
+            <p className="mt-1 text-base leading-7 text-slate-700">
+              {track.album.name}
+            </p>
+            <div className="mt-4 flex items-center gap-4">
+              {/* <button
+                type="button"
+                onClick={() => player.toggle()}
+                className="flex items-center text-sm font-bold leading-6 text-pink-500 hover:text-pink-700 active:text-pink-900"
+                aria-label={`${player.playing ? 'Pause' : 'Play'} episode ${
+                  track.title
+                }`}
+              >
+                <PlayPauseIcon
+                  playing={player.playing}
+                  className="h-2.5 w-2.5 fill-current"
+                />
+                <span className="ml-3" aria-hidden="true">
+                  Listen
+                </span>
+              </button> */}
+              {/* <span
+                aria-hidden="true"
+                className="text-sm font-bold text-slate-400"
+              >
+                /
+              </span> */}
+              {/* <Link
+                href={`/${track.id}`}
+                className="flex items-center text-sm font-bold leading-6 text-pink-500 hover:text-pink-700 active:text-pink-900"
+                aria-label={`Show notes for episode ${track.title}`}
+              >
+                Show notes
+              </Link> */}
+            </div>
           </div>
         </div>
       </Container>
@@ -102,13 +111,10 @@ function EpisodeEntry({ track }: { track: SpotifyApi.TrackObjectFull}) {
 export default function Home() {
   const { data: session } = useSession();
 
-  console.log(session);
   const [playlistUrl, setPlaylistUrl] = useState<string>('');
   const playlistId = (/https:\/\/open.spotify.com\/playlist\/(.*)\?/.exec(playlistUrl) ?? {1: null})[1];
 
   const { data } = trpc.spotify.playlist.useQuery({ id: playlistId as string }, { enabled: !!playlistId })
-  console.log(data)
-
 
   return (
     <>

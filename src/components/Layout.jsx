@@ -175,9 +175,6 @@ function AboutSection(props) {
 
 export function Layout({ children, playlist, tracks }) {
   let hosts = ['Eric Gordon', 'Wes Mantooth']
-  // const { data: session, status } = useSession()
-  // console.log({session, status })
-
   const copyToClipboard = () => {
     window.navigator.clipboard.writeText(tracks.map((track) => {
       return `${track.name}`
