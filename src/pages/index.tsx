@@ -51,6 +51,7 @@ function EpisodeEntry({ track }: { track: SpotifyApi.TrackObjectFull}) {
       <Container className={''}>
         <div className='flex'>
           <Image
+            alt={track.name}
             className='w-1/5 mr-4'
             src={track.album.images[0].url}
             width={track.album.images[0].width}
